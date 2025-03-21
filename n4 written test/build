@@ -1,0 +1,35 @@
+#!/bin/sh
+__print_help() {
+cat <<HELP
+Usage: ./build filename
+compiles and (on successful compilation) runs given filename
+do not include .java in filename, treat it like class name
+
+  -h               display this help and exit
+
+Examples:
+  ./build twelve
+  ../build nine
+
+Populates directories relative to calling directory
+HELP
+}
+
+while getopts h option
+do
+  case $option in
+    (*)
+      __print_help
+      exit;;
+  esac
+done
+
+if [ ! -f "$*.java" ]; then
+  >&2 printf "%s\n\n" "$*.java not found"
+  __print_help
+  exit 1
+fi
+
+if javac "$*.java"; then
+  java "$@"
+fi
